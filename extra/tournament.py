@@ -64,13 +64,35 @@ def registerTournament(name):
     """
     DB = connect()
     c = DB.cursor()
+    c.execute("SELECT * FROM tournaments WHERE tournament_name = (%s);", (name,))
+    
+    matching_tournaments = c.fetchall()
+    if len(matching_tournaments) > 0:
+        DB.commit()
+        DB.close()
+        print("\tERROR: tournament name already exists - please choose another name")
+        return False
+    
     c.execute("INSERT INTO tournaments (tournament_name) VALUES (%s);", (name,))
+
     DB.commit()
     DB.close()
-    
+    return True
+
+def deleteTournament(name):
+
+    """Deletes a tournament from the tournaments table"""
+    DB = connect()
+    c = DB.cursor()
+    c.execute('''DELETE FROM join_player_tournament USING tournaments
+              WHERE join_player_tournament.tournament_id = tournaments.id
+              AND tournaments.tournament_name = (%s);''', (name,))
+    c.execute("DELETE FROM tournaments WHERE tournament_name = (%s);", (name,))
+    DB.commit()
+    DB.close()
 
 def registerPlayer(name):
-    """Adds a player to the tournament database.
+    """Adds a player to the database.
   
     The database assigns a unique serial id number for the player.  (This
     should be handled by your SQL database schema, not in your Python code.)

@@ -3,15 +3,28 @@ from tournament import *
 
 tournament_list = []
 
-def addTournament():
+def addOrRemoveTournament():
     showTournaments()
     print()
-    name = raw_input("Enter the name of the tournament you would like to add, or enter 'quit' to quit: ")
+    choice = input("Enter 1 to add a tournament or 2 to delete a tournament ('0' to quit): ")
 
-    if name == "quit":
+    if choice == 1:
+        successfully_registered = False
+        while successfully_registered is False:
+            name = raw_input("Enter the name of the tournament you would like to add, or enter 'quit' to quit: ")
+            if name == "quit":
+                return
+            else:
+                successfully_registered = registerTournament(name)
+    elif choice == 2:
+        name = raw_input("Enter the name of the tournament you would like to remove, or enter 'quit' to quit: ")
+        if name == "quit":
+            return
+        else:
+            deleteTournament(name)
+    else:
         return
     
-    registerTournament(name)
 
 def deleteMatches():
     choice = input("'1' to delete all matches, '2' to delete from particular tournament ('0' to quit): ")
@@ -21,16 +34,14 @@ def deleteMatches():
         deleteAllMatches()
         print("\tDeletion successful!")
     elif choice == 2:
-        tournament_name = selectTournament()
-        if len(tournament_name) == 0:
-            return
+        tournament_name = raw_input("Enter the name of the tournament you would like to delete matches from, or enter 'quit' to quit: ")
         print("\tDeleting matches from tournament '{}'".format(tournament_name)) 
         deleteMatchesFromTournament(tournament_name)
         print("\tDeletion successful!")
     else:
         return
 
-def addPlayerToDB():
+def addOrRemovePlayerFromDB():
     name = raw_input("Enter the name of the player you wish to add, or 'quit' to quit: ")
     
     if name == "quit":
@@ -44,7 +55,7 @@ def addPlayerToDB():
 
     if choice == 1:
         tournament_name = raw_input("Enter the name of the tournament you wish to register to player for: ")
-        registerPlayerForTournament(name, tournament_name):
+        registerPlayerForTournament(name, tournament_name)
 
 def playerStandingsForTournament():
     return
@@ -85,7 +96,7 @@ def showTournaments():
 def list_options():
     print('-' * 60)
     print("Options:")
-    print("\t1. Add a tournament to the database")
+    print("\t1. Add or remove a tournament")
     print("\t2. Delete matches from a particular tournament")
     print("\t3. Delete all player records")
     print("\t4. Count the number of players")
@@ -104,7 +115,7 @@ def main():
         choice = input("\nEnter number of command ('0' to quit): ")
 
         if choice == 1:
-            addTournament()
+            addOrRemoveTournament()
         elif choice == 2:
             deleteMatches()
         elif choice == 3:
