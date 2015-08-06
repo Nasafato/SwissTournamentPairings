@@ -32,7 +32,7 @@ def deletePlayers():
 def countPlayers():
     """Returns the number of players currently registered."""
     DB = connect()
-    c = DB.cursor()
+    c = DB.cursor()	
     c.execute("SELECT count(*) FROM players;")
     num_players = c.fetchall()
     DB.close()
@@ -86,6 +86,8 @@ def reportMatch(winner, loser):
     """
     DB = connect()
     c = DB.cursor()
+    # Increments the number of wins of the winner by 1, as well as the number of matches he/she has played by 1
+    # Increments the nubmer of matches the loser has played by 1
     c.execute("UPDATE players SET wins = wins+1, matches = matches+1 WHERE id = (%s);", (winner,))
     c.execute("UPDATE players SET matches = matches+1 WHERE id = (%s);", (loser,))
     DB.commit()
@@ -115,6 +117,7 @@ def swissPairings():
 
     pairings = []
     
+    # Creates a list of tuples, each tuple being a pair of players, for the next round of the tournament
     pre_pairings = zip(player_list[::2], player_list[1::2])
     for tup in pre_pairings:
         pairings.append(tup[0]+tup[1])
